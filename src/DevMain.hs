@@ -1,11 +1,11 @@
 {-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE OverloadedLabels #-}
 module DevMain where
 
 import ClassyPrelude
 
-import Data.Time.Calendar (fromGregorian)
-import Data.Time.LocalTime (TimeOfDay(..))
 import Data.Text.Language
+import Data.Time (LocalTime (..), TimeOfDay (..), fromGregorian)
 
 
 (&) :: a -> (a -> b) -> b
@@ -13,12 +13,19 @@ import Data.Text.Language
 
 run :: IO ()
 run = do
-  say $ fromGregorian 2019 4 20 & localize @English
-  say $ fromGregorian 2019 4 20 & localize @Japanese
-  say $ fromGregorian 2019 4 20 & localize @(Japanese, Long)
-  say $ TimeOfDay 15 25 0 & localize @Japanese
-  say $ TimeOfDay 15 25 0 & localize @(Japanese, Short)
-  say $ TimeOfDay 15 25 0 & localize @(Japanese, Long)
+  let date = fromGregorian 2019 4 20
+  let time = TimeOfDay 15 25 0
+  say $ date & localize @English
+  say $ date & localize @Japanese
+  say $ #ja date
+  say $ #ja_long date
+  say $ date & localize @(Japanese, Long)
+  say $ time & localize @Japanese
+  say $ time & localize @(Japanese, Short)
+  say $ time & localize @(Japanese, Long)
+  say $ LocalTime date time & localize @Japanese
+  say $ LocalTime date time & localize @(Japanese, Short)
+  say $ LocalTime date time & localize @(Japanese, Long)
   say ""
   say $ (21 :: Int) & localize @((English, Long), AsWeekDay)
   say $ (21 :: Int) & localize @((English, Short), AsWeekDay)
@@ -29,23 +36,25 @@ run = do
   let go (label, lang) = do
         say label
         inLang lang $ \ l -> do
-          say $ TimeOfDay 15 25 0 & l
-          say $ fromGregorian 2019 4 20 & l
+          say $ time & l
+          say $ date & l
         say ""
         say $ label <> " Short"
         inLang' @Short lang $ \ l -> do
-          say $ TimeOfDay 15 25 0 & l
-          say $ fromGregorian 2019 4 20 & l
+          say $ time & l
+          say $ date & l
         say ""
         say $ label <> " Long"
         inLang' @Long lang $ \ l -> do
-          say $ TimeOfDay 15 25 0 & l
-          say $ fromGregorian 2019 4 20 & l
+          say $ time & l
+          say $ date & l
         say ""
 
   traverse_ go ([("Japanese", "ja"), ("English", "en")] :: [(Text, Text)])
 
-
+type instance ToLanguage "en" = English
+type instance ToLanguage "ja" = Japanese
+type instance ToLanguage "ja_long" = (Japanese, Long)
 
 
 inLang
@@ -76,7 +85,7 @@ inLang'
 inLang' lang f = case lang of
   "en" -> f (localize @(English, len))
   "ja" -> f (localize @(Japanese, len))
-  _ -> f (localize @(English, len))
+  _    -> f (localize @(English, len))
 
 printDay
   :: forall lang. LocalizeDay lang
