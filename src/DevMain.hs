@@ -27,10 +27,10 @@ run = do
   say $ LocalTime date time & localize @(Japanese, Short)
   say $ LocalTime date time & localize @(Japanese, Long)
   say ""
-  say $ (21 :: Int) & localize @((English, Long), AsWeekDay)
-  say $ (21 :: Int) & localize @((English, Short), AsWeekDay)
-  say $ (21 :: Int) & localize @((Japanese, Long), AsWeekDay)
-  say $ (21 :: Int) & localize @((Japanese, Short), AsWeekDay)
+  say $ AsWeekDay (21 :: Int) & localize @(English, Long)
+  say $ AsWeekDay (21 :: Int) & localize @(English, Short)
+  say $ AsWeekDay (21 :: Int) & localize @(Japanese, Long)
+  say $ AsWeekDay (21 :: Int) & localize @(Japanese, Short)
   say ""
 
   let go (label, lang) = do
@@ -86,11 +86,3 @@ inLang' lang f = case lang of
   "en" -> f (localize @(English, len))
   "ja" -> f (localize @(Japanese, len))
   _    -> f (localize @(English, len))
-
-printDay
-  :: forall lang. LocalizeDay lang
-  => Day -> IO ()
-printDay day = do
-  say $ localize @lang day
-  say $ localize @(lang, Short) day
-  say $ localize @(lang, Long) day

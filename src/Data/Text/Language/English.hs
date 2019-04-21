@@ -37,11 +37,13 @@ instance Localize (English, Short) TimeOfDay where
   localize = pack . formatTime timeLocale "%H:%M"
 
 
-instance Integral i => Localize (English, AsWeekDay) i where
-  localize = localize @((English, Short), AsWeekDay)
+instance Localize English (AsWeekDay i) where
+  localize = localize @(English, Short)
 
-instance Integral i => Localize ((English, Short), AsWeekDay) i where
-  localize = pack . snd . (wDays timeLocale !!) . fromIntegral . (`mod` 7)
+instance Localize (English, Short) (AsWeekDay i) where
+  localize (AsWeekDay i) =
+    pack . snd . (wDays timeLocale !!) . fromIntegral $ i `mod` 7
 
-instance Integral i => Localize ((English, Long), AsWeekDay) i where
-  localize = pack . fst . (wDays timeLocale !!) . fromIntegral . (`mod` 7)
+instance Localize (English, Long) (AsWeekDay i) where
+  localize (AsWeekDay i) =
+    pack . fst . (wDays timeLocale !!) . fromIntegral $ i `mod` 7

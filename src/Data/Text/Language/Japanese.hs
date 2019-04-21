@@ -1,4 +1,7 @@
-module Data.Text.Language.Japanese where
+module Data.Text.Language.Japanese
+  ( Japanese(..)
+  )
+where
 
 import ClassyPrelude
 
@@ -43,11 +46,13 @@ instance Localize (Japanese, Long) TimeOfDay where
   localize = pack . formatTime timeLocale "%H時%M分%S秒"
 
 
-instance Integral i => Localize (Japanese, AsWeekDay) i where
-  localize = localize @((Japanese, Short), AsWeekDay)
+instance Localize Japanese (AsWeekDay i) where
+  localize = localize @(Japanese, Short)
 
-instance Integral i => Localize ((Japanese, Short), AsWeekDay) i where
-  localize = pack . snd . (wDays timeLocale !!) . fromIntegral . (`mod` 7)
+instance Localize (Japanese, Short) (AsWeekDay i) where
+  localize (AsWeekDay i) =
+    pack . snd . (wDays timeLocale !!) . fromIntegral $ i `mod` 7
 
-instance Integral i => Localize ((Japanese, Long), AsWeekDay) i where
-  localize = pack . fst . (wDays timeLocale !!) . fromIntegral . (`mod` 7)
+instance Localize (Japanese, Long) (AsWeekDay i) where
+  localize (AsWeekDay i) =
+    pack . fst . (wDays timeLocale !!) . fromIntegral $ i `mod` 7
