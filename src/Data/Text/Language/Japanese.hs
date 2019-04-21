@@ -4,9 +4,8 @@ import ClassyPrelude
 
 import Data.List ((!!))
 import Data.Text.Language.Type
-import Data.Time.Calendar (Day (..), toGregorian)
+import Data.Time (Day (..), TimeOfDay (..))
 import Data.Time.Format (TimeLocale (..), defaultTimeLocale, formatTime)
-import Data.Time.LocalTime (TimeOfDay (..), midnight)
 
 data Japanese = Japanese
   deriving (Eq, Show)

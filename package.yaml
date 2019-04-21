@@ -80,4 +80,11 @@ library:
   source-dirs:      src
 
 ghc-options:
-  - -fprint-potential-instances
+  - -Wall
+  - -Wcompat
+  # - -Werror
+  - -Wincomplete-record-updates
+  - -Wincomplete-uni-patterns
+  - -Wnoncanonical-monad-instances
+  - -Wnoncanonical-monadfail-instances
+
