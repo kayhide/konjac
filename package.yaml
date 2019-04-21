@@ -76,7 +76,8 @@ default-extensions:
   - TypeSynonymInstances
   - ViewPatterns
 
-executables:
-  konjac:
-    source-dirs:      src
-    main:             Main.hs
+library:
+  source-dirs:      src
+
+ghc-options:
+  - -fprint-potential-instances
